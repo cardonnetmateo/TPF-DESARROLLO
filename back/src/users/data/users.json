@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Juan Perez",
+    "username": "juanperez",
+    "email": "juan@test.com"
+  },
+  {
+    "id": 2,
+    "name": "Maria Gomez",
+    "username": "mariagomez",
+    "email": "maria@test.com"
+  },
+  {
+    "id": 3,
+    "name": "Pedro Ruiz",
+    "username": "pedroruiz",
+    "email": "pedro@test.com"
+  },
+  {
+    "id": 4,
+    "name": "Ana Lopez",
+    "username": "analopez",
+    "email": "ana@test.com"
+  },
+  {
+    "id": 5,
+    "name": "Lucas Diaz",
+    "username": "lucasdiaz",
+    "email": "lucas@test.com"
+  }
+]
