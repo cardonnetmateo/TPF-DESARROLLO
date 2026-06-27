@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from './user.types';
 
 @Entity('users')
@@ -18,8 +18,17 @@ role!: UserRole;
 @Column({ type: 'boolean', default: false})
 isVerified!: boolean;
 
-@Column({ nullable: true, select: false })
+@Column({ type: 'varchar', nullable: true, select: false })
 verificationToken?: string | null;
+
+@Column({ type: 'varchar', nullable: true, select: false })
+resetPasswordToken?: string | null;
+
+@Column({ type: 'datetime', nullable: true, select: false })
+resetPasswordExpires?: Date | null;
+
+@CreateDateColumn()
+createdAt!: Date;
 
 @Column({ select: false })
 passwordHash!: string;
