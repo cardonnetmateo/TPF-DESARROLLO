@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Category, CreateCategoryInput } from '../category.types';
+import { Category, CreateCategoryInput, UpdateCategoryInput } from '../category.types';
 import { CategoriesRepository } from './categories.repository';
 
 @Injectable()
@@ -8,10 +8,11 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
   private nextId: number = 1;
 
   async findAll(name?: string): Promise<Category[]> {
+    let result = this.categories;
     if (name) {
-      return this.categories.filter((c) => c.name.includes(name));
+      result = result.filter((c) => c.name.toLowerCase().includes(name.toLowerCase()));
     }
-    return this.categories;
+    return result.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   async findById(id: number): Promise<Category | undefined> {
@@ -25,6 +26,13 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     };
 
     this.categories.push(category);
+    return category;
+  }
+
+  async update(id: number, input: UpdateCategoryInput): Promise<Category | undefined> {
+    const category = await this.findById(id);
+    if (!category) return undefined;
+    category.name = input.name;
     return category;
   }
 

@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import {
   CreateProductInput,
   Product,
@@ -11,16 +10,16 @@ export class InMemoryProductsRepository implements ProductsRepository {
   private products: Product[] = [];
   private nextId = 1;
 
-  async findAll(name?: string, orderBy?: 'name' | 'price', order?: 'asc' | 'desc', page?: number, limit?: number): Promise<ProductsFindAllResult> {
+  async findAll(name?: string, sortBy?: 'name' | 'price', order?: 'asc' | 'desc', page?: number, limit?: number): Promise<ProductsFindAllResult> {
   let result = this.products;
 
   if (name) 
     result = result.filter(p => p.name.toLowerCase().includes(name.toLowerCase()));
   
-  if (orderBy === "name") 
+  if (sortBy === "name") 
     result = result.sort((a,b) => order === "desc" ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name))
 
-  if (orderBy === "price")
+  if (sortBy === "price")
     result = result.sort((a, b) => order === "desc" ? b.price - a.price : a.price - b.price)
 
   if (page === undefined && limit === undefined) {
@@ -30,16 +29,14 @@ export class InMemoryProductsRepository implements ProductsRepository {
   page = Math.max(page || 1, 1);
   limit = Math.min(Math.max(limit || 10, 1), 50);
   const offset = (page - 1) * limit;
+  const total = this.products.length;
   result = result.slice(offset, offset + limit);
 
   return {
-    data: result,
-    meta: {
-      page,
-      limit,
-      total: this.products.length,
-      totalPages: Math.ceil(this.products.length / limit),
-    },
+    items: result,
+    total,
+    page,
+    limit,
   };
 }
 
@@ -49,13 +46,14 @@ export class InMemoryProductsRepository implements ProductsRepository {
   }
 
   async create(input: CreateProductInput): Promise<Product> {
-    if (!input.categoryId) throw new BadRequestException('Category ID is required');
+    const catId = input.categoryId ?? 0;
     const product: Product = {
       id: this.nextId++,
       name: input.name,
       price: input.price,
-      stock: input.stock,
-      categoryId: input.categoryId,
+      stock: input.stock ?? 0,
+      categoryId: catId,
+      category: { id: catId, name: '' },
     };
 
     this.products.push(product);
@@ -69,6 +67,11 @@ export class InMemoryProductsRepository implements ProductsRepository {
     if (input.name !== undefined) product.name = input.name;
     if (input.price !== undefined) product.price = input.price;
     if (input.stock !== undefined) product.stock = input.stock;
+    if (input.categoryId !== undefined) {
+      const catId = input.categoryId ?? 0;
+      product.categoryId = catId;
+      product.category = { id: catId, name: '' };
+    }
 
     return product;
   }

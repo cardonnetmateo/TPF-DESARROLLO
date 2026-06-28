@@ -33,11 +33,12 @@ export class TypeOrmProductsRepository
     price: entity.price,
     stock: entity.stock,
     categoryId: entity.category.id,
+    category: { id: entity.category.id, name: entity.category.name },
   };
   
 }
 
-async findAll(name?: string,orderBy?: 'name' | 'price',order?: 'asc' | 'desc',page?: number,limit?: number,): Promise<ProductsFindAllResult> {
+async findAll(name?: string, sortBy?: 'name' | 'price', order?: 'asc' | 'desc', page?: number, limit?: number): Promise<ProductsFindAllResult> {
   
 const query = this.repository
 .createQueryBuilder('product')
@@ -45,7 +46,7 @@ const query = this.repository
 
 if (name) {query.where('LOWER(product.name) LIKE :name', {name: `%${name.toLowerCase()}%`,});}
 
-if (orderBy) {query.orderBy(`product.${orderBy}`,(order ?? 'asc').toUpperCase() as 'ASC' | 'DESC',);}
+if (sortBy) {query.orderBy(`product.${sortBy}`,(order ?? 'asc').toUpperCase() as 'ASC' | 'DESC',);}
 
 if (page === undefined && limit === undefined) {
 const entities = await query.getMany();
@@ -60,8 +61,10 @@ query.take(limit);
 const [entities, total] = await query.getManyAndCount();
 
 return {
-data: entities.map(entity => this.toProduct(entity)),
-meta: {page,limit,total,totalPages: Math.ceil(total / limit)}
+items: entities.map(entity => this.toProduct(entity)),
+total,
+page,
+limit,
 };
 
 }
@@ -104,7 +107,11 @@ async update(id: number, product: UpdateProductInput): Promise<Product | undefin
   entity.name = product.name ?? entity.name;
   entity.price = product.price ?? entity.price;
   entity.stock = product.stock ?? entity.stock;
-  
+  if (product.categoryId !== undefined) {
+    entity.category = product.categoryId !== null
+      ? { id: product.categoryId } as any
+      : null as any;
+  }
 
   const saved = await this.repository.save(entity);
   return this.toProduct(saved);

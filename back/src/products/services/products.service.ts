@@ -24,12 +24,12 @@ export class ProductsService {
 
   findAll(
     name?: string,
-    orderBy?: 'name' | 'price',
+    sortBy?: 'name' | 'price',
     order?: 'asc' | 'desc',
     page?: number,
     limit?: number
   ): Promise<ProductsFindAllResult> {
-    return this.productsRepository.findAll(name, orderBy, order, page, limit);
+    return this.productsRepository.findAll(name, sortBy, order, page, limit);
   }
 
   findOne(id: number): Promise<Product | undefined> {

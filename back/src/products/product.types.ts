@@ -1,4 +1,4 @@
-import { IsInt,IsNotEmpty,IsNumber,IsOptional,IsPositive,Length,Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, Length, MaxLength, Min } from 'class-validator';
 
 export type Product = {
   id: number;
@@ -6,28 +6,31 @@ export type Product = {
   price: number;
   stock: number;
   categoryId: number;
+  category: { id: number; name: string };
 };
 
 export class CreateProductInput {
   @IsNotEmpty()
-  @Length(2, 100)
+  @MaxLength(256)
   name!: string;
 
   @IsNumber()
   @IsPositive()
   price!: number;
 
+  @IsOptional()
   @IsInt()
   @Min(0)
-  stock!: number;
+  stock?: number;
 
+  @IsOptional()
   @IsInt()
-  categoryId!: number;
+  categoryId?: number | null;
 }
 
 export class UpdateProductInput {
   @IsOptional()
-  @Length(2, 100)
+  @MaxLength(256)
   name?: string;
 
   @IsOptional()
@@ -39,16 +42,17 @@ export class UpdateProductInput {
   @IsInt()
   @Min(0)
   stock?: number;
+
+  @IsOptional()
+  @IsInt()
+  categoryId?: number | null;
 }
 
 export type PaginatedResult<T> = {
-  data: T[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
 };
 
 export type ProductsFindAllResult = Product[] | PaginatedResult<Product>;

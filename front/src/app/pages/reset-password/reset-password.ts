@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -13,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class ResetPasswordPage implements OnInit {
   private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
 
   token = '';
   password = '';
@@ -47,8 +49,11 @@ export class ResetPasswordPage implements OnInit {
     try {
       await firstValueFrom(this.auth.resetPassword(this.token, this.password));
       this.success.set(true);
+      this.toast.success('Contraseña actualizada.');
     } catch (err: any) {
-      this.error.set(err.error?.message || 'Error al restablecer la contraseña.');
+      const msg = err.error?.message || 'Error al restablecer la contraseña.';
+      this.error.set(msg);
+      this.toast.error(msg);
     } finally {
       this.loading.set(false);
     }

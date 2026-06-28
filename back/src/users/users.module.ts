@@ -26,9 +26,9 @@ import { UserEntity } from './user.entity';
       ) => {
         const source = process.env.USERS_SOURCE ?? 'db';
         switch (source) {
-          case 'db': return dbGateway;
+          case 'jsonplaceholder': return jsonPlaceholderGateway;
           case 'file': return localGateway;
-          default: return jsonPlaceholderGateway;
+          default: return dbGateway;
         }
       },
       inject: [DbUsersGateway, JsonPlaceholderUsersGateway, LocalUsersGateway],

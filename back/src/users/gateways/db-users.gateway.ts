@@ -16,9 +16,9 @@ export class DbUsersGateway implements UsersGateway {
     const users = await this.usersRepo.find();
     return users.map((u) => ({
       id: u.id,
-      name: u.name ?? u.email.split('@')[0],
-      username: u.email.split('@')[0],
       email: u.email,
+      role: u.role,
+      createdAt: u.createdAt,
     }));
   }
 
@@ -27,9 +27,9 @@ export class DbUsersGateway implements UsersGateway {
     if (!user) throw new NotFoundException('User not found');
     return {
       id: user.id,
-      name: user.name ?? user.email.split('@')[0],
-      username: user.email.split('@')[0],
       email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
     };
   }
 }

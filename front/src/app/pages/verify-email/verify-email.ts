@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -12,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class VerifyEmailPage implements OnInit {
   private route = inject(ActivatedRoute);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
 
   success = signal(false);
   error = signal('');
@@ -26,8 +28,11 @@ export class VerifyEmailPage implements OnInit {
     try {
       await firstValueFrom(this.auth.verifyEmail(token));
       this.success.set(true);
+      this.toast.success('Email verificado correctamente.');
     } catch (err: any) {
-      this.error.set(err.error?.message || 'Token inválido o expirado.');
+      const msg = err.error?.message || 'Token inválido o expirado.';
+      this.error.set(msg);
+      this.toast.error(msg);
     }
   }
 }

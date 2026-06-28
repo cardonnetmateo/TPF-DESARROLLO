@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CategoryEntity } from '../../categories/category.entity';
 import { CategoriesRepository } from './categories.repository';
-import { Category, CreateCategoryInput } from '../category.types';
+import { Category, CreateCategoryInput, UpdateCategoryInput } from '../category.types';
 
 @Injectable()
 export class TypeOrmCategoriesRepository implements CategoriesRepository {
@@ -28,6 +28,7 @@ export class TypeOrmCategoriesRepository implements CategoriesRepository {
       });
     }
 
+    query.orderBy('category.name', 'ASC');
     const entities = await query.getMany();
     return entities.map((entity) => this.toCategory(entity));
   }
@@ -50,13 +51,20 @@ export class TypeOrmCategoriesRepository implements CategoriesRepository {
     return this.toCategory(saved);
   }
 
+  async update(id: number, input: UpdateCategoryInput): Promise<Category | undefined> {
+    const entity = await this.categoriesRepository.findOne({ where: { id } });
+    if (!entity) return undefined;
+
+    entity.name = input.name;
+    const saved = await this.categoriesRepository.save(entity);
+    return this.toCategory(saved);
+  }
+
   async remove(id: number): Promise<Category | undefined> {
     const category = await this.findById(id);
     if (!category) return undefined;
     await this.categoriesRepository.delete(id);
     return category;
   }
-
-  
 }
 
