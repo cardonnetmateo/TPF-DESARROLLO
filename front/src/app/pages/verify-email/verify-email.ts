@@ -29,12 +29,9 @@ export class VerifyEmailPage implements OnInit {
       await firstValueFrom(this.auth.verifyEmail(token));
       this.success.set(true);
       this.toast.success('Email verificado correctamente.');
-<<<<<<< HEAD
       if (this.auth.isAuthenticated()) {
         await firstValueFrom(this.auth.me());
       }
-=======
->>>>>>> dd63145d695fe665e995e0f9bd53ec7b89e38b2b
     } catch (err: any) {
       const msg = err.error?.message || 'Token inválido o expirado.';
       this.error.set(msg);
