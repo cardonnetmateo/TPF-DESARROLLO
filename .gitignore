@@ -1,0 +1,10 @@
+# ZIP de entrega
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE (por si abrís desde acá)
+.vscode/
+.idea/
