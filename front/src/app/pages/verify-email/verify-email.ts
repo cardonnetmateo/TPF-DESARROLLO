@@ -25,6 +25,14 @@ export class VerifyEmailPage implements OnInit {
       return;
     }
 
+    if (this.auth.isAuthenticated() && !this.auth.user()) {
+      try { await firstValueFrom(this.auth.me()); } catch {}
+    }
+    if (this.auth.user()?.isVerified) {
+      this.success.set(true);
+      return;
+    }
+
     try {
       await firstValueFrom(this.auth.verifyEmail(token));
       this.success.set(true);
