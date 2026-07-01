@@ -24,6 +24,12 @@ Aplicación Full Stack desarrollada como Trabajo Práctico Final utilizando **Ne
 
 ---
 
+## Base de datos
+
+El proyecto utiliza **SQLite** como sistema de base de datos y **TypeORM** como ORM para la gestión de entidades, relaciones y consultas, permitiendo interactuar con la base de datos mediante clases y repositorios.
+
+---
+
 ## Funcionalidades
 
 * Registro de usuarios.
@@ -45,45 +51,34 @@ Aplicación Full Stack desarrollada como Trabajo Práctico Final utilizando **Ne
 └── front/     # Frontend desarrollado con Angular
 ```
 
-
 ---
 
 ## Autenticación
 
-El backend utiliza JWT para autenticar usuarios.
-
-Al iniciar sesión se genera un token que debe enviarse en cada petición protegida mediante el encabezado:
-
-```
-Authorization: Bearer <token>
-```
+El backend implementa autenticación mediante **JWT (JSON Web Token)**. Tras iniciar sesión, el servidor genera un token que debe enviarse en las solicitudes a los endpoints protegidos para identificar y autorizar al usuario.
 
 ---
 
-## Verificación de Email
+## Verificación de correo electrónico
 
-Al registrarse un usuario se envía un correo electrónico mediante Resend con un enlace de verificación.
-
-Hasta que el correo no sea verificado, el usuario no puede acceder a las funcionalidades protegidas.
+Durante el registro se genera un token de verificación y se envía un correo electrónico utilizando **Resend**. Una vez que el usuario accede al enlace recibido, su cuenta queda marcada como verificada y puede acceder a las funcionalidades que requieren autenticación.
 
 ---
 
-## Roles
+## Control de acceso por roles
 
-La aplicación implementa autorización mediante roles utilizando:
+La aplicación implementa autorización basada en roles mediante:
 
-* Decoradores personalizados (`@Roles`)
-* `JwtAuthGuard`
-* `RolesGuard`
+* Decoradores personalizados (`@Roles`).
+* `JwtAuthGuard`.
+* `RolesGuard`.
 
-Esto permite restringir el acceso a determinados endpoints según el rol del usuario.
+Esto permite restringir el acceso a determinados recursos según el rol asignado al usuario.
 
 ---
 
-## Autores
+## Autor
 
-Trabajo desarrollado por:
+**Mateo Cardonnet**
 
-* Mateo Cardonnet
-
-Como Trabajo Práctico Final para la materia Desarrollo de Software.
+Trabajo Práctico Final – Desarrollo de Software.
